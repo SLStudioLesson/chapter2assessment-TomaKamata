@@ -1,5 +1,10 @@
 package data;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -22,11 +27,24 @@ public class RecipeFileHandler {
      * @return レシピデータ
      */
     public ArrayList<String> readRecipes() {
-        // try {
+        try {
+            File dataFile = new File(filePath); // ファイル
+            ArrayList<String> recipes = new ArrayList<>(); // レシピ一覧
 
-        // } catch (IOException e) {
-        //     System.out.println("Error reading file:" + e.getMessage());
-        // }
+            // ファイルの有無
+            if (dataFile.exists()){
+                BufferedReader reader = new BufferedReader(new FileReader(dataFile)); // ファイル読み込み
+                String line; //１行読み取り
+                while((line = reader.readLine()) != null){
+                    // データがあれば1行ごと格納
+                    recipes.add(line);
+                }
+                reader.close();
+            }
+            return recipes;
+        } catch (IOException e) {
+            System.out.println("Error reading file:" + e.getMessage());
+        }
         return null;
     }
 
@@ -40,10 +58,12 @@ public class RecipeFileHandler {
      */
      // 
     public void addRecipe(String recipeName, String ingredients) {
-        // try {
-
-        // } catch (IOException e) {
-
-        // }
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
+            String inputRecipe = recipeName + "," + ingredients; // レシピ名,材料1...
+            writer.write(inputRecipe); // 書き込み
+            writer.newLine(); // 書き込み後に改行する
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
